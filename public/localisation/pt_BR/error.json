@@ -1,0 +1,7 @@
+{
+    "not-found": "Desculpe... Página não encontrada.",
+    "server-error": "Erro no servidor.",
+    "no-authentication": "Ops... Sem autenticação, favor fazer o login.",
+    "permission-denied": "Ops... Você não tem acesso para fazer isso.",
+    "under-construction": "Desculpe, o portal está em manutenção no momento"
+}

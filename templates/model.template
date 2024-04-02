@@ -1,0 +1,18 @@
+<?php
+namespace App\{{module_name}}\Models;
+
+use System\Models\TableModel;
+
+class {{class_name}} extends TableModel{
+    protected string $table = "{{table_name}}";
+    protected array $fields = [{{fields}}];
+    protected array $primaryKeys = [{{primary_keys}}];
+
+    public function getById($id){
+        $this->query()->where('{{id}}', '=', $id);
+        return $this->get();
+    }
+    public function getColumns(){
+        return $this->queryFactory->query("SHOW COLUMNS FROM {{table_name}};");
+    }
+}

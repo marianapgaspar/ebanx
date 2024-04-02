@@ -1,0 +1,28 @@
+stages:
+    - build
+
+docker_build:
+    stage: build
+    only: 
+        - main
+        - hml
+    script:
+        # ATENCAO!!! FAVOR NAO EDITAR ESSE SCRIPT SEM TER PLENO CONHECIMENTO DO ASSUNTO
+        # Apaga imagens antigas no runner
+        - if [ -z $(docker images | grep $CI_REGISTRY/$CI_PROJECT_PATH\/$IMAGE_NAME | awk '{print $3}') ] ;
+           then echo "Nao ha o que limpar" ;
+           else docker image rm --force $(docker images | grep $CI_REGISTRY/$CI_PROJECT_PATH\/$IMAGE_NAME | awk '{print $3}') ;
+           fi
+
+        # Loga e constroi
+        # IMPORTANTE: Lembrar de trocar as credencias para uma generica
+        - docker build . -t $CI_REGISTRY/$CI_PROJECT_PATH/$CI_COMMIT_REF_NAME:$CI_COMMIT_SHORT_SHA
+
+        # Ajusta a tag LASTEST com a hash da ultima imagem
+        - IMAGE_ID=$(docker images | grep $CI_REGISTRY/$CI_PROJECT_PATH\/$CI_COMMIT_REF_NAME | awk '{print $3}')
+        - docker tag $IMAGE_ID $CI_REGISTRY/$CI_PROJECT_PATH/$CI_COMMIT_REF_NAME:latest
+
+        # Envia para o repositório a imagem com a tag da 
+        # ultima hash e também a com a tag lastest
+        - docker push $CI_REGISTRY/$CI_PROJECT_PATH/$CI_COMMIT_REF_NAME:$CI_COMMIT_SHORT_SHA
+        - docker push $CI_REGISTRY/$CI_PROJECT_PATH/$CI_COMMIT_REF_NAME:latest

@@ -1,0 +1,10 @@
+<?php
+define('APP_DB_DRIVE','Mysqli');
+define('APP_DB_HOST','172.30.0.3');
+define('APP_DB_USER','root');
+define('APP_DB_PASSWORD','toor');
+define('APP_DB_NAME','ebanx');
+define('APP_DIR',__DIR__);
+define('APP_URL','http://ebanx.local');
+define('APP_SALT','$2y$10$');
+define('APP_AUTH','App\Users\Rules\Authentication\Authentication');

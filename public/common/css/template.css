@@ -1,0 +1,116 @@
+html,
+body {
+    width: 100%;
+    height: 100%;
+}
+
+.btn-orange {
+    background-color: #FA8A0A !important;
+    border-color: #FA8A0A !important;
+    color: #fff !important;
+}
+
+.btn-orange:hover {
+    color: #fff !important;
+    background-color: #FA7A39 !important;
+    border-color: #FA7A39 !important;
+    transition: 0.3s !important;
+}
+
+.btn-purple {
+    background-color: #6f42c1 !important;
+    border-color: #6f42c1 !important;
+    color: #fff !important;
+}
+
+.btn-purple:hover {
+    color: #fff !important;
+    background-color: #6039A8 !important;
+    border-color: #6039A8 !important;
+    transition: 0.3s !important;
+}
+
+.navbar-purplee {
+    background-color: #5b5a76 !important;
+}
+
+.navbar-purpleeb {
+    background-color: #45435b !important;
+}
+
+.sidebar {
+    background-color: #45435b !important;
+}
+
+.nav-link {
+    color: white !important;
+    font-size: 20px;
+    ;
+}
+
+.texttable {
+    display: none;
+}
+
+.nav-tabs .nav-item .nav-link {
+    color: #6039A8 !important;
+}
+
+#hora {
+    font-size: 15px;
+}
+
+.popover__title {
+    font-size: 24px;
+    text-decoration: none;
+    color: green;
+    text-align: center;
+}
+
+.popover__wrapper {
+    position: relative;
+    display: inline-block;
+    margin-left: 1%;
+    margin-top: 0.5%;
+}
+
+.popover__content {
+    opacity: 0;
+    visibility: hidden;
+    position: absolute;
+    right: -300px;
+    transform: translate(0, 10px);
+    background-color: #5b5a76;
+    padding: 0.5rem;
+    box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.26);
+    width: auto;
+}
+
+.popover__content:before {
+    position: absolute;
+    z-index: -1;
+    content: "";
+    right: calc(3% - -290px);
+    top: -10.2px;
+    border-style: solid;
+    border-width: 0 10px 10px 10px;
+    border-color: transparent transparent #5b5a76 transparent;
+    transition-duration: 0.3s;
+    transition-property: transform;
+}
+
+.popover__wrapper:hover .popover__content {
+    z-index: 10;
+    margin-top: 20px;
+    opacity: 1;
+    visibility: visible;
+    transform: translate(0, -20px);
+    transition: all 0.5s cubic-bezier(0.75, -0.02, 0.2, 0.97);
+}
+
+.popover__message {
+    font-size: 15px;
+    text-align: center;
+    font-weight: bold;
+    color: white;
+}

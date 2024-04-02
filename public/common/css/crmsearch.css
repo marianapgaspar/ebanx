@@ -1,0 +1,71 @@
+.table-search {
+    margin-bottom: 0;
+}
+
+.table-search th {
+    text-transform: uppercase;
+    font-size: small !important;
+    vertical-align: middle;
+    font-weight: bold !important;
+    text-align: center !important;
+    color: #73879C !important;
+}
+
+.table-search th::after {
+    content: "";
+}
+
+.table-search td {
+    vertical-align: middle;
+    text-align: center !important;
+    font-size: small !important;
+}
+
+.tab-content {
+    background-color: #fff;
+    margin-top: 7px;
+    border: solid 1px #ccc;
+}
+
+.form-group-select2 {
+    margin: 0 !important;
+}
+
+
+/*items*/
+
+.title {
+    font-weight: bold;
+    /*color: #888;*/
+    font-size: small;
+    text-transform: uppercase;
+}
+
+.title::after {
+    content: ":";
+}
+
+.text {
+    font-weight: 500;
+    /* color: #000;*/
+    font-size: small;
+}
+
+.modal-full {
+    width: 95% !important;
+}
+
+@media (min-width: 576px) {
+    .modal-dialog {
+        max-width: 92% !important;
+        margin: 30px auto;
+    }
+}
+
+.select2-container--open {
+    z-index: 9999999;
+}
+
+.ui-datepicker {
+    z-index: 9999999 !important;
+}
