@@ -61,7 +61,7 @@ function getclassname($tableName){
 }
 
 function createModel($module,$table){
-    $mysql = new \mysqli('175.30.0.3','root','toor','mercosul');
+    $mysql = new \mysqli('172.30.0.3','root','toor','ebanx');
     $result =  $mysql->query("SHOW COLUMNS FROM $table");
     $data = [];
     $primarys = [];
@@ -81,7 +81,7 @@ function createModel($module,$table){
     file_put_contents(__DIR__."/app/$module/Models/$className.php",$template);
 }
 function createController($module,$table){
-    $mysql = new \mysqli('175.30.0.3','root','toor','mercosul');
+    $mysql = new \mysqli('172.30.0.3','root','toor','ebanx');
     $result =  $mysql->query("SHOW COLUMNS FROM $table");
     $data = [];
     $primarys = [];
@@ -102,7 +102,7 @@ function createController($module,$table){
 }
 function createRoute($module, $table){
     $file = __DIR__."/app/$module/Routes/Web.php";
-    $mysql = new \mysqli('175.30.0.3','root','toor','mercosul');
+    $mysql = new \mysqli('172.30.0.3','root','toor','ebanx');
     $result =  $mysql->query("SHOW COLUMNS FROM $table");
     $data = [];
     $primarys = [];
@@ -123,7 +123,7 @@ function createRoute($module, $table){
     } 
 }
 function createForm($module,$table){
-    $mysql = new \mysqli('175.30.0.3','root','toor','mercosul');
+    $mysql = new \mysqli('172.30.0.3','root','toor','ebanx');
     $result =  $mysql->query("SHOW COLUMNS FROM $table");
     $data = [];
     $primarys = [];

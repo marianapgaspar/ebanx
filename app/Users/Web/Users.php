@@ -23,20 +23,15 @@ class Users{
         $dashboard->addBreadcrumb(url()->toRoute('users'), "users");
         //Instanciando tabela
         $table = layout()->table($dashboard);
-        $table->setColumns(['id','email','name','id_group','ativo']);
+        $table->setColumns(['id','email','name','id_group']);
         $table->searchFields(['id','email','name']);
-        $table->setOrdenableColumns(['id','email','name','id_group','ativo']);
+        $table->setOrdenableColumns(['id','email','name','id_group']);
         //criando filtros
         $filter = $table->filter(url()->toRoute('users/list'));
         $filter->input('name',2);
         $filter->select2('Permissões',2)->ajax(url()->toRoute('users/users-groups/get'),'name','id','name');
         $filter->select2('sector',2)->addOption('','--Selecione--')->addOptionsFromModels(SectorResponsible::instance()->result(),'id','name');
-        $filter->select2('cod_rep', 3)->addOption('', '--Selecione--')->addOptionsFromModels(Repres::instance()->result(),'cod_rep',function($data){
-            return $data->cod_rep." - ".$data->nome;
-        });
-        $filter->select2('cod_at', 3)->ajax(url()->toRoute('Emitente/getFornec'),'cod_emitente','cod_emitente','cod_emitente+" - "+item.nome_abrev', true);
-        $filter->select2('cod_fornecedor', 3)->ajax(url()->toRoute('Emitente/getFornec'),'cod_emitente','cod_emitente','cod_emitente+" - "+item.nome_abrev', true);
-      
+        
         $filter->loadDataArray($request->gets());
         $users = UsersModel::instance()->filter($request->gets());
         if ($request->get('sector')){
@@ -158,22 +153,11 @@ class Users{
         if ($request->getAuth()->hasScope(Scopes::USERS)){
             $sectorSubordinate = SectorSubordinates::instance();
             $sectorSubordinate->query()->where('subordinate_id','=',$id);
-            // $sectorSubordinateArray = array_map(function($data){return $data->responsible_sector_id;},$sectorSubordinate->result());
             if (SectorSubordinates::instance()->getDpto($user->id)->id){
                 $form->getInput('departamento_subordinado')->setSelectedOption(SectorSubordinates::instance()->getDpto($user->id)->id,  SectorSubordinates::instance()->getDpto($user->id)->name);
             }
             $form->getInput('id_group')->setSelectedOption($grp->id,$grp->name);
             $form->getInput('ativo')->setValues($ativo);
-            if ($user->cod_estabel){
-                $form->getInput('cod_estabel')->setValue($user->getEstabel());
-            }
-            $user->getEstabelByUser($user->id);
-            if ($user->cod_at && Emitentes::instance()->getByCodEmitente($user->cod_at)->nome_abrev){
-                $form->getInput('cod_at')->setSelectedOption($user->cod_at,$user->cod_at." - ".Emitentes::instance()->getByCodEmitente($user->cod_at)->nome_abrev);
-            }
-            if ($user->cod_fornecedor && Emitentes::instance()->getByCodEmitente($user->cod_fornecedor)->nome_abrev){
-                $form->getInput('cod_fornecedor')->setSelectedOption($user->cod_fornecedor,$user->cod_fornecedor." - ".Emitentes::instance()->getByCodEmitente($user->cod_fornecedor)->nome_abrev);
-            }
         }
         
         $dashboard->setContents( $form->html());
@@ -183,16 +167,6 @@ class Users{
     public function add(Request $request):void{
         $model = UsersModel::instance();
         $data = $request->posts();
-        // unset($data['departamento_subordinado']);
-        if (!$request->post("cod_at")){
-            unset($data['cod_at']);
-        }
-        if (!$request->post("cod_fornecedor")){
-            unset($data['cod_fornecedor']);
-        }
-        if (!$request->post("cod_rep")){
-            unset($data['cod_rep']);
-        }
         $model->setValues($data);
         
         if ($model->password != $model->password_repeat) {
@@ -201,18 +175,14 @@ class Users{
         $model->formatDatas($request);
         try{
             $model->validateSave();                
-
             $nextUser =  UsersModel::instance()->getLast()+1;
-            $model->setId($nextUser);      
             $model->insert();
 
             $user = UsersModel::instance()->getById($nextUser);
             if ($request->getAuth()->hasScope(Scopes::USERS) && $request->post('departamento_subordinado')){
                 $model->addSectorSubordinate($request->post('departamento_subordinado'));
             }             
-
             
-            $this->addLog($request,true, $user);
             response()->json(['redirect'=>'form/'.$user->id]);
             
         }catch(ValidationException $e){
@@ -231,7 +201,6 @@ class Users{
             if ($request->getAuth()->hasScope(Scopes::USERS) && $request->post('departamento_subordinado')){
                 $model->addSectorSubordinate($request->post('departamento_subordinado'));
             }            
-            $this->addLog($request,false,UsersModel::instance()->getById($id));
             response()->redirect(url()->toRoute('users/form/'.$model->id));
         }catch(ValidationException $e){
             response()->json(["errors"=>$e->getErrors()],422);
@@ -270,24 +239,6 @@ class Users{
             $novo->addSectorSubordinate($dpto->id);
             $this->addLog($request,true, $novo);
             response()->json(['redirect'=>url()->toRoute('users/form/'.$novoId)]);
-        } catch(ValidationException $e){
-            response()->json(["errors"=>$e->getErrors()],422);
-        } 
-    }
-    protected function addLog(Request $request, bool $add,UsersModel $user){
-        $log = UsersLog::instance();
-        $log->codigo= $user->id;
-        $log->nome_user= $request->getAuth()->getName();
-        $log->dt_emis = date('Y-m-d H:i:s');
-        if($add==true){
-            $log->assunto= 'Criação do registro de Usuário';
-            $log->narrativa = 'Usuário implantado no portal';
-        }else{
-            $log->assunto = 'Alteração do registro do usuário';
-            $log->narrativa = 'Usuário alterado no portal';
-        }
-        try {
-            $log->insert();
         } catch(ValidationException $e){
             response()->json(["errors"=>$e->getErrors()],422);
         } 

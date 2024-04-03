@@ -5,46 +5,6 @@ namespace System\Tools;
 use DateTime;
 
 class Uteis {
-    
-
-    public static function origProduto(int $codigo){
-        $array = ["Industrializado"=>"1", "Revenda"=>"2"];
-        return  array_search($codigo, $array);
-    }
-
-    public static function modalVenda(int $codigo){
-        $array = ["Industrial"=>"1", "Consumo"=>"2", "Revenda/Comercio"=>"3"];
-        return  array_search($codigo, $array);
-    }
-
-
-    public static function estadual(int $codigo){
-        $array = ["Estadual"=>"1", "Interestadual"=>"2"];
-        return  array_search($codigo, $array);
-    }
-
-
-    public static function contribIcms(int $codigo){
-        $array = ["Sim"=>"1", "Não"=>"2"];
-        return  array_search($codigo, $array);
-    }
-
-
-    public static function tpContrato(int $codigo){
-        $array = ["Relacionado"=>"1", "Pré fabricado"=>"2", "Conjunto frigorifico COM FINAME"=>"3", "Conjunto frigorifico SEM FINAME"=>"4"];
-        return  array_search($codigo, $array);
-    }
-
-    public static function cdTribIpi(int $codigo){
-        $array = ["Tributa"=>"1", "Isento"=>"2", "Outros"=>"3", "Reduzido"=>"4"];
-        return  array_search($codigo, $array);;
-    }
-    public static function estadosMaiorDifal(string $uf):bool{
-        if (in_array($uf, ['SP','SE','MA','MG'])){
-            return true;
-        }
-        return  false;
-    }
     /**
      * Funcao Mascara
      *
@@ -71,34 +31,6 @@ class Uteis {
         }else{
             return $str;
         }
-    }
-    public static function sitPed(int $sit):string{ 
-        switch ($sit){
-            case 1:
-                return 'Aberto';
-                break;
-            case 2:
-                return 'Atendido parcial';
-                break;
-            case 3:
-                return 'Atendido total';
-                break;
-            case 4:
-                return 'Pendente';
-                break;
-            case 5:
-                return 'Suspenso';
-                break;
-            case 6:
-                return 'Cancelado';
-                break;
-            default:
-                return ' ';
-        }               
-    }
-    public static function itemProjeto(string $fm){
-        $array = ['fm'=>'552', '560', '554', '553', '567', '556', '566', '103'];
-        return  array_search($fm, $array);;
     }
     public static function isCnpj(string $cnpj):bool{
         $verify = preg_replace('/[^0-9]/', '', (string) $cnpj);

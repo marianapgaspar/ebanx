@@ -47,9 +47,9 @@ class Authentication{
             return true;
         }
         $user = Users::instance()->getById($this->auth->getId());
-        if (!$this->getAuth()->getId() || $user->session_id != session()->get("session_id")){
-            response()->redirect(url()->toRoute('users/login'));
-        } 
+        // if (!$this->getAuth()->getId() || $user->session_id != session()->get("session_id")){
+        //     response()->redirect(url()->toRoute('users/login'));
+        // } 
         if (!in_array('docsimport', $this->auth->getScopes()) && $this->underConstruction){
             return false;
         }

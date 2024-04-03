@@ -6,7 +6,7 @@ use App\Layout\Rules\Errors\AErrors;
 
 class Error extends AErrors {
     function prepare(){
-        $this->addCss(url()->toRoute('public/common/css/danica.css'));
+        $this->addCss(url()->toRoute('public/common/css/error.css'));
         $this->setTitle('Login');
         $this->setTemplate(url()->toPath('public/layout/template/error/error.php'));
     }

@@ -50,9 +50,7 @@ class Web implements IRoutes{
 
         $routes->get('get', Users::class, 'get');
 
-        $routes->get('log/list/{userId}',UsersLog::class,'table');
         $routes->get('getByName/{name}', Users::class, 'getByName');
         $routes->get('getById/{id}', Users::class, 'getById');
-        $routes->get('getByGerente/{idGerente}', Users::class, 'getByGerente');
     }
 }

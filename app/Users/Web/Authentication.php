@@ -17,7 +17,7 @@ class Authentication{
             layout()->login()
                 ->setUrlLogin(url()->toRoute('users/login'))
                 ->setLocalisations(Localisation::instance()->getActives())
-                ->setUrlRedirect(url()->toRoute("Home"))
+                // ->setUrlRedirect(url()->toRoute("Home"))
                 ->html()
         );
     }
@@ -147,20 +147,5 @@ class Authentication{
         }catch (Exception $e){
             response()->json(['success'=>false,'message'=>$e->getMessage()]);
         }    
-    }
-    public function gerarEmailTodos(Request $request){
-        try {
-            
-            $representantes = Users::instance()->getAtivos();
-            foreach ($representantes as $row){
-                $row->hash = md5($row->email);
-                $row->save();
-                $row->link = url()->toRoute("users/forgot/{$row->hash}"); 
-                Triggers::instance()->dispachTriggers(ModelsTriggers::RECUPERAR_SENHA,$row);
-            }
-            response()->json(['success'=>true],200);
-         }catch (Exception $e){
-             response()->json(['success'=>false,'message'=>$e->getMessage()]);
-         }  
     }
 }

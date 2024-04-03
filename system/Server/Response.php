@@ -18,7 +18,7 @@ class Response{
     public function json($contents, $httpCode = 200){
         header($_SERVER['SERVER_PROTOCOL'] . ' '.self::HTTP_STATUS[$httpCode], true, $httpCode);
         header('Content-Type: application/json');
-        exit(json_encode($contents));
+        exit($contents);
     }
 
     public function redirect($url){

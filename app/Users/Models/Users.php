@@ -20,7 +20,7 @@ class Users extends TableModel
 {
     protected string $table = "users";
     protected array $fields = [
-        "id", "name", "nome_completo", "email", "telefone", "password", "lembrete_senha", "id_group","cod_estabel","cod_rep","cod_at","cod_fornecedor", "ativo", "dt_expira_senha", "qt_dias_senha", "hash","session_id","perc_desc_max","qtd_dias_prazo_medio_max","gerente","comprador","vlr_max_ped","vlr_max_mes"
+        "id", "name", "email","password"
     ];
     protected array $primaryKeys = ["id"];
     protected array $protectedFields = ["password"];
@@ -39,10 +39,6 @@ class Users extends TableModel
     public function getIdGroup(int $id): array
     {
         $this->queryFactory->where('id_group', '=', $id)->where('ativo','=',1);
-        return $this->result();
-    }
-    public function getComprador(){
-        $this->query()->where("comprador","=",1);
         return $this->result();
     }
     public function getLast(): int
@@ -72,27 +68,14 @@ class Users extends TableModel
         $this->queryFactory->where('email', '=', $email);
         return $this->get();
     }
-    public function getAtivos():array{
-        $this->query()->where('ativo','=',1);
-        return $this->result();
-    }
     public function getByHash(string $hash): self
     {
         $this->queryFactory->where('hash', '=', $hash);
         return $this->get();
     }
-    public function getEmailByCodAt($cod_at){
-        $this->query()->where("cod_at",'=',$cod_at)->limit(1);
-        return $this->get()->email;
-    }
     public function getById(int $id): self
     {
         $this->queryFactory->where('id', '=', $id);
-        return $this->get();
-    }
-    public function getByIdAtivo(int $id): self
-    {
-        $this->queryFactory->where('id', '=', $id)->where('ativo','=',1);
         return $this->get();
     }
     public function getArrayById(int $id): array
@@ -143,27 +126,6 @@ class Users extends TableModel
         $this->query()->joinSelect($subordinado, 'responsible_sector_id = id');
         return $this->get();
     }
-    public function getUserRepres(string $cod_rep):self{
-        $this->query()->clearSelect();
-        $this->query()->select(['id', 'name', 'email']);
-        $this->query()->where('cod_rep', '=', $cod_rep)->orderBy('id', 'DESC')->limit(1);
-        return $this->get();
-    }
-    public function getSuborinadosBySector(int $idSector):self{ 
-        $setor = new Select;
-        $setor->select(['subordinate_id'])->from('sector_subordinates')->where('responsible_sector_id','=',$idSector);
-
-        $this->query()->joinSelect($setor,'users.id = subordinate_id');
-        return $this;
-    }
-    public function getGerente(int $id):array{
-        $model = clone $this;
-        $model->query()->clearSelect();
-        $model->query()->select(['id','name']);
-        $this->queryFactory->where('id', '=', $id);
-        return $this->result();
-    }
-
     public function addSectorResponsable($sectors){
         $deletar = array_diff_key(SectorResponsible::instance()->getByResponsibleResult($this->id),$sectors);
         foreach($deletar as $delete){
@@ -189,21 +151,9 @@ class Users extends TableModel
     }
 
 
-
     public function getGroup(): UsersGroups
     {
         return UsersGroups::instance()->getById($this->id_group);
-    }
-    public function getEstabel():array{
-        return json_decode($this->cod_estabel);
-    }
-    public function getEstabelByUser(int $id)  {
-        $this->query()->clearSelect();
-        $this->query()->select(['cod_estabel'])->from('users')->where('id', '=', $id);
-        $array = substr($this->queryFactory->get()->row()->cod_estabel, 1);
-        $array = substr($array, 0,-1);
-        $estabel = json_decode($array);
-        return $estabel;
     }
     public function validatePassword(string $password): bool
     {
@@ -219,53 +169,14 @@ class Users extends TableModel
         
         return $this;
     }
-    public function setDtExpira(int $nDias = 0):self
-    {
-        $this->dt_expira_senha = date('Y-m-d', strtotime('+' . $nDias . ' days'));
-        return $this;
-    }
-
-    public function setId(int $id):self{
-        $this->id = $id;
-        return $this;
-    }
-
-    public function setAtivo(string $ativo = 'Sim'):self
-    {
-        $this->ativo = $ativo == 'Sim' ? 1 : 0;
-        return $this;
-    }
-    public function setEstabel(array $cod_estabel){
-        $this->cod_estabel = json_encode($cod_estabel);
-        return $this->cod_estabel;
-    }
-
     public function formatDatas(Request $request){
         $this->setPassword($request->post('password'));
-        $this->setDtExpira((int) $request->post('qt_dias_senha'));
-        $this->setAtivo($request->post('ativo'));
-        if ($request->post('cod_estabel')){
-            $this->setEstabel($request->post('cod_estabel'));
-        }
-        if (!$request->post("comprador") && !$request->post("gerente")){
-            $this->vlr_max_ped = 0;
-            $this->vlr_max_mes = 0;
-        }
     }
     public function formatUpdate(Request $request, $oldUser){
-        // unset($data['departamento_subordinado']);
         $email = $this->email;
         $name = $this->name;
         $this->setValues($request->posts());
-        if (!$request->post("cod_at")){
-            $this->cod_at = 0;
-        }
-        if (!$request->post("cod_fornecedor")){
-            $this->cod_fornecedor = 0;
-        }
-        if (!$request->post("cod_rep")){
-            $this->cod_rep = 0;
-        }
+       
         if ($request->post('password') && $this->password != $this->password_repeat) {
             response()->json(['message'=>'Favor repetir a senha corretamente'], 422);  
         }
@@ -277,15 +188,7 @@ class Users extends TableModel
         if (!$this->password){
             $this->password = $oldUser->password;
         }
-        if ($request->post('cod_estabel')){
-            $this->setEstabel($request->post('cod_estabel'));
-        }
-        if (!$request->post("comprador") && !$request->post("gerente")){
-            $this->vlr_max_ped = 0;
-            $this->vlr_max_mes = 0;
-        }
-        $request->post('qt_dias_senha') ? $this->setDtExpira((int) $request->post('qt_dias_senha')): null;
-        $request->post('ativo') ? $this->setAtivo($request->post('ativo')): null;       
+       
         if ($request->post('email') && $email != $request->post('email')){
             if (Users::instance()->getByEmail($request->post('email'))->id) {
                 response()->json(['message'=>'Já existe usuario com esse email '], 422); 
@@ -312,9 +215,6 @@ class Users extends TableModel
         $validation->addValidation('name', Required::instance($required));
         $validation->addValidation('email', Required::instance($required));
         $validation->addValidation('id_group', Required::instance($required));
-        $validation->addValidation('lembrete_senha', Required::instance($required));
-        $validation->addValidation('qt_dias_senha', Required::instance($required));
-        $validation->addValidation('nome_completo', Required::instance($required));
         $validation->addValidation('password', Required::instance($required));
         $validation->addValidation('password_repeat', Required::instance($required));
         $validation->validate($this);
@@ -326,9 +226,6 @@ class Users extends TableModel
         $validation->addValidation('name', Required::instance($required));
         $validation->addValidation('email', Required::instance($required));
         $validation->addValidation('id_group', Required::instance($required));
-        $validation->addValidation('lembrete_senha', Required::instance($required));
-        $validation->addValidation('qt_dias_senha', Required::instance($required));
-        $validation->addValidation('nome_completo', Required::instance($required));
         $validation->validate($this);
     }
 }

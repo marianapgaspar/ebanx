@@ -24,10 +24,7 @@ class Dashboard extends ADashboard{
             'dictionary'=>$this->dictionary]);
     }
     function prepare(){
-        // $this->addJs("https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.slim.min.js");
         $this->addJs("https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js");
-        // $this->addJs("https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js");
-        
         $this->addJs(url()->toRoute('public/common/bracket/js/jquery.js'));
         // $this->addJs(url()->toRoute('public/common/bracket/js/popper.js'));
         $this->addJs(url()->toRoute('public/common/bracket/js/bootstrap.js'));
@@ -68,13 +65,21 @@ class Dashboard extends ADashboard{
                 $html .= "<a href=\"{$menu->url}\" class=\"br-menu-link\">
                 <div class=\"br-menu-item\">
                   <i class=\"menu-item-icon icon {$menu->icon} tx-20\"></i>
-                  <span class=\"menu-item-label\">{$dictionary->get($menu->name)}</span>
+                  <span class=\"menu-item-label\" id=\"{$menu->name}\">{$dictionary->get($menu->name)}</span>
                   <i class=\"menu-item-arrow fa fa-angle-down\"></i>
                 </div>
               </a>";
               $html .="<ul class=\"br-menu-sub nav flex-column\" style=\"display: none;\">";
               $html .=$this->buildMenuRecursive($menu->getChildren(),$dictionary);
               $html .="</ul>";
+
+            }elseif(!(count($menu->getChildren())) && $menu->icon){
+                $html .= "<a href=\"{$menu->url}\" class=\"br-menu-link\">
+                <div class=\"br-menu-item\">
+                  <i class=\"menu-item-icon icon {$menu->icon} tx-22\"></i>
+                  <span class=\"menu-item-label\" id=\"{$menu->name}\">{$dictionary->get($menu->name)}</span>
+                </div>
+              </a>";
             }else{
                 $html .= "<a href=\"{$menu->url}\" class=\"br-menu-link\">
                 <div class=\"br-menu-item\">

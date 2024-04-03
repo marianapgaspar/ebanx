@@ -27,9 +27,10 @@ class Controller{
         $this->request = new Request();
         $uriSegments = explode('/',$this->uri);
         $module = ucfirst(reset($uriSegments));
-        unset($uriSegments[0]);
+        // unset($uriSegments[0]);
         $path = implode('/',$uriSegments);
-        $this->request->setCalledModule($module);
+        // $this->request->setCalledModule($module);
+        $this->request->setCalledModule("Account");
         $this->request->setEndpoint($path);
         $this->request->setVerb($this->verb);
         $this->request->setPosts($_POST);

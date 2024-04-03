@@ -18,19 +18,6 @@ abstract class ASelect extends AInput{
         return $this;
     }
 
-    public function addOptionWithArray(array $values,$name = ''):self{
-        $key = serialize($values);
-        $this->options[$key] = $name;
-        return $this;
-    }
-
-    public function addArrayOptions(array $values,string $key,string|\Closure $name):self{
-        foreach ($values as $row) {
-            $this->options[$row[$key]] = $row[$name];
-        }
-        return $this;
-    }
-
     public function addOptionsFromModels(array $models,string $key,string|\Closure $name):self{
         foreach($models as $model){
             if($name instanceof \Closure){

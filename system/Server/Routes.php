@@ -43,14 +43,6 @@ class Routes{
             return $routeObject;
         }
         foreach ((array)$this->loadedRoutes[$request->getVerb()] as $route) {
-            $migrating = Settings::instance()->getById("migrating");
-            if ($migrating->valor){
-                $routeObject =  new Route();
-                $routeObject->setController(Errors::class);
-                $routeObject->setMethod('construction');
-                return $routeObject;
-            }   
-            
             $segments = explode("/", $request->getEndpoint());
             $routeFound = true;
             $uriVariables= [];
