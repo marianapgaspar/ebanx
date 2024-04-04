@@ -1,10 +1,10 @@
 import express from 'express';
-import balanceRoutes from './src/routes/BalanceRoutes';
+import accountRoutes from './src/routes/AccountRoutes';
 
 const app = express();
 
 app.use(express.json());
-app.use('/', balanceRoutes);
+app.use('/', accountRoutes);
 
 const PORT: number = parseInt(process.env.PORT || '3000');
 
