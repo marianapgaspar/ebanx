@@ -11,6 +11,7 @@ This is a TypeScript project using Express.js framework. It follows the MVC (Mod
   - rules: Contains classes that define business logic rules for the controllers.
   
 ## Installation
+Make sure to copy the `.env.example` file and rename it to `.env` before running the project.
 To install the project dependencies, use npm:
 
 npm install
