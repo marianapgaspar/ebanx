@@ -49,7 +49,7 @@ export default class BalanceEventsRules {
         const accountExists = await accountService.checkAccountExists(data.origin);
         if (!accountExists) {
             eventStatus = {
-                status: 401, send:0
+                status: 404, send:0
             };
             return eventStatus;
         }
@@ -59,7 +59,7 @@ export default class BalanceEventsRules {
         eventStatus = {
             status: 201, 
             send: {
-                destination: {id: updatedAccount?.id, balance: updatedAccount?.amount}
+                origin: {id: updatedAccount?.id, balance: updatedAccount?.amount}
             }
         };
         return eventStatus;
@@ -74,22 +74,23 @@ export default class BalanceEventsRules {
 
         const originAccountExists = await accountService.checkAccountExists(data.origin);
         if (!originAccountExists) {
-            eventStatus = {status: 401, send:0};
+            eventStatus = {status: 404, send:0};
             return eventStatus;
         }
 
         const destinationAccountExists = await accountService.checkAccountExists(data.destination);
         if (!destinationAccountExists) {
-            eventStatus = {status: 401, send:0};
+            eventStatus = {status: 404, send:0};
             return eventStatus;
         }
 
         const originAccount = await accountService.getAccount(data.origin);
         const destinationAccount = await accountService.getAccount(data.destination);
         const updatedOriginAccount = await accountService.updateAmount({id: data.origin, amount: (originAccount.amount - data.amount)})
-        const updatedDestinationAccount = await accountService.updateAmount({id: data.destination, amount: (destinationAccount.amount - data.amount)})
+        const updatedDestinationAccount = await accountService.updateAmount({id: data.destination, amount: (destinationAccount.amount + data.amount)})
 
-        eventStatus = {status: 201, 
+        eventStatus = {
+            status: 201, 
             send: {
                 origin: {
                     id: updatedOriginAccount?.id, balance:updatedOriginAccount?.amount
